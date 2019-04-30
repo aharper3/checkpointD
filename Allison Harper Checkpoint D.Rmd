@@ -1,0 +1,152 @@
+---
+title: "Allison Harper Checkpoint D"
+output: html_notebook
+---
+
+
+```{r}
+# 1 tidyverse package
+library(tidyverse)
+
+# 2 read in file as a tibble
+
+health <- read_csv("Small Cities Health Data.csv")
+health <- as_tibble(health)
+
+print(health)
+
+```
+
+```{r}
+# 3 Convert health to a data frame. Convert health back to a tibble
+
+health <- as.data.frame(health)
+
+health <- as_tibble(health)
+
+print(health)
+```
+
+```{r}
+# 4 Construct a scatterplot.  Number of physicians (response) and number
+# of hospital beds (explanatory)
+
+
+health.graph <- health %>%
+  ggplot(aes(x = hosp.beds, y = doctors)) +
+  geom_point()
+  
+print(health.graph)
+```
+
+```{r}
+# 5 Scatterplot with the same variables.
+
+health.graph.2 <- health %>%
+  filter(hosp.beds <= 1000)
+
+ggplot(data = health.graph.2) +
+  geom_point(aes(x = hosp.beds, y = doctors))
+
+```
+```{r}
+#6 add a regression line to the graph from #5
+
+health.graph.2 <- health %>%
+  filter(hosp.beds <= 1000) 
+ggplot(data = health.graph.2, mapping = aes(x = hosp.beds, y = doctors)) +
+  geom_point() +
+  geom_smooth(method = lm)
+
+```
+
+
+```{r}
+# 7
+
+small.cities <- read_csv("Small Cities Densities.csv")
+
+health.new <- health %>%
+  left_join(small.cities, "city.code")
+
+```
+
+
+```{r}
+# 8 add categorical density variable low <= 80, middle 80 > x > 120, high <= 120
+
+
+health.add <- health.new %>%
+  mutate(dens.cat = cut(density, breaks = c(-Inf, 80, 120, Inf), 
+                  labels = c("Low","Middle","High")))
+
+
+
+```
+
+```{r}
+# 9 scatterplot
+
+health.graph.2 <- health.add %>%
+  filter(hosp.beds <= 1000) 
+
+ggplot(health.graph.2, aes(x = hosp.beds, y = doctors, color = dens.cat)) +
+  geom_point() +
+  geom_smooth(method = lm)
+
+```
+
+```{r}
+# 10 add labels
+
+health.graph.2 <- health %>%
+  filter(hosp.beds <= 1000) 
+ggplot(health.graph.2, aes(x = hosp.beds, y = doctors, color = dens.cat)) +
+  geom_point() +
+  geom_smooth(method = lm) +
+  labs(title = "Number of Hospital Beds per Physician",
+       x = "Doctors",
+       y = "Hospital Beds",
+       colour = "Population Density")
+       
+
+ 
+```
+
+
+```{r}
+
+# 11 
+
+patient.data <- read_csv("Patient Data.csv")
+
+patients <- patient.data %>%
+  mutate(patient = word(patient,2))
+
+```
+
+
+```{r}
+
+# 12 tidy patient tibble
+
+# FROM PRESENTATION: 
+# A dataset is tidy if it adheres to three rules
+# Each variable must have its own column
+# Each observation must have its own row
+# Each value must have its own cell
+
+# Why is patients not tidy?
+
+```
+
+Notes & Questions
+-----------------
+1- Tidying data
+  --I keep messing these up
+  --gather, key, trial, vars ?
+2- Github
+  I did not set it up properly in class and 
+  not am not able to do the homework
+
+
