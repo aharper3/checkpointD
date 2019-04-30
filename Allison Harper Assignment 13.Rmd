@@ -1,0 +1,112 @@
+---
+title: "Math Scores and Science Scores by Gender"
+output:
+  html_document:
+    fig_height: 3
+    fig_width: 5
+editor_options: 
+  chunk_output_type: inline
+---
+
+Introduction
+===========
+Is there a relationship between a student’s math score and their science score? 
+Is this association the same for female score as it is for male scores?
+The goal of this analysis was to determine if there was an association between
+a student's math score and their science score.  Further, this was used
+to determine if this association was consistent across both genders. The 
+standardized test scores from 200 students were used as data for the analysis.
+
+
+```{r, include=FALSE}
+library(tidyverse)
+
+hsb2 <- read_csv("hsb2.csv")
+
+```
+
+Analysis
+========
+
+Math and Science Association
+---------------------------
+The correlation and 95% confidence interval of the math - science associations 
+is included as descriptive statistics below. The scatterplot and regression line 
+are included as a visual representation of the association between math and 
+science scores of all students in the data set.  
+```{r, echo=FALSE}
+
+hsb2$female <- factor(hsb2$female, levels = c(0:1), 
+                      labels = c("Male", "Female"))
+
+
+male <- subset(hsb2, hsb2$female == "Male")
+female <- subset(hsb2, hsb2$female == "Female")
+
+ggplot(data = hsb2, mapping = aes(x = math, y = science)) +
+  geom_point(male, mapping = aes(x = math, y = science), color = "Blue") +
+  geom_point(female, mapping = aes(x = math, y = science), color = "Pink") +
+  geom_text(aes(70, 30, label = "cor = 0.63")) +
+  stat_smooth(method = "lm", fill = "grey") +
+  theme_classic() +
+  labs( x = "Math Score",
+        y = "Science Score",
+        title = "Math Scores Relation to Science Scores")
+
+
+```
+
+
+
+Math and Science by Gender
+--------------------------
+
+This data was then broken down by gender.  The same statistical analysis
+was used to determine if a student's gender had an impact on the relationship 
+between their math and science grades. 
+
+The correlation and 95% confidence interval of the math - science associations 
+for males and females separately is included as descriptive statistics below. 
+A visual representation of the correlation for each gender are included below.   
+```{r, echo=FALSE}
+
+
+ggplot(data = male, mapping = aes(x = math, y = science)) +
+  geom_point(color = "Blue") +
+  geom_text(aes(70, 30, label = "cor = 0.61")) +
+  stat_smooth(method = "lm", fill = "grey") +
+  theme_classic() +
+  labs( x = "Math Score",
+        y = "Science Score",
+        title = "Math Score Relation to Science Score in Males")
+
+
+ggplot(data = female, mapping = aes(x = math, y = science)) +
+  geom_point(color = "Pink") +
+  geom_text(aes(70, 30, label = "cor = 0.66")) +
+  stat_smooth(method = "lm", fill = "grey") +
+  theme_classic() +
+  labs( x = "Math Score",
+        y = "Science Score",
+        title = "Math Score Relation to Science Score in Females")
+
+
+
+```
+
+
+Conclusion
+==========
+
+The correlation coefficient for all students was 0.63. There is a moderately 
+positive correlation between each student's math and science scores.  This means 
+that students who earn high scores in math are likely to earn high scores in 
+science.  When the data was broken down by gender, the correlation coefficient 
+for females was 0.66.  This was higher than the correlation coefficient
+for male students, which was 0.61. The analyses provided the 95% confidence
+intervals for all students in the data set, and for the male and female students
+separetely. 
+ 0.54 < all students < 0.71  &  0.46 < male < 0.73  &  0.53 < female < 0.75.  
+The association between math scores and science scores is stronger for female 
+students than for all students in the data and for just the male students.
+
